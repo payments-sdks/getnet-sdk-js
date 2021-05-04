@@ -53,12 +53,56 @@ class Getnet
         return this.authorizationToken;
     }
 
+    /**
+     * Autorizar transação de credito.
+     * 
+     * @param {Object} transaction 
+     * @returns {Object}
+     */
     async authorizeCredit(transaction) {
         await this.request.auth();
 
+        // Gerar token do cartão e associar na transacao
+        var cartaoToken = await this.request.gerarTokenCartao(transaction.credit.card.number_card, transaction.customer.customer_id);
+        transaction.credit.card.number_token = cartaoToken;
+        delete transaction.credit.card.number_card;
+
+        // Autorizar transacao de credito
         var response = await this.request.post('/v1/payments/credit', transaction);
 
-        //..
+        return response;
+    }
+
+    /**
+     * Confirmar transacao de credito tardia.
+     * 
+     * @param {String} pagtoId 
+     * @returns {Object}
+     */
+    async confirmCredit(pagtoId) {
+        await this.request.auth();
+
+        // Confirmar transacao de credito
+        var response = await this.request.post('/v1/payments/credit/' + pagtoId + '/confirm');
+
+        return response;
+
+    }
+
+    /**
+     * Cancelar transacao de credito tardia.
+     * 
+     * @param {String} pagtoId 
+     * @returns {Object}
+     */
+     async cancelCredit(pagtoId) {
+        await this.request.auth();
+
+        // Cancelar transacao de credito
+        var response = await this.request.post('/v1/payments/credit/' + pagtoId + '/cancel');
+
+        return response;
+
     }
 }
 

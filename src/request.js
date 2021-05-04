@@ -37,6 +37,27 @@ class Request
     }
 
     /**
+     * Gerar token do cartao.
+     * 
+     * @param {string} cartaoNum 
+     * @param {string} clientID 
+     * @returns {String}
+     */
+    async gerarTokenCartao(cartaoNum, clientID) {
+        // Verificar se esta logado
+        await this.auth();
+
+        var data = {
+            card_number: cartaoNum,
+            customer_id: clientID,
+        };
+
+        var res = await this.post('/v1/tokens/card', data);
+
+        return res.number_token;
+    }
+
+    /**
      * Enviar requisicao.
      * 
      * @param {string} urlPart 
@@ -65,12 +86,27 @@ class Request
         }
 
         if (this.getnet.getAuthorizationToken()) {
-            req.headers['Authorization'] = 'Bearer ' + this.getAuthorizationToken();
+            req.headers['Authorization'] = 'Bearer ' + this.getnet.getAuthorizationToken();
         }
 
-        var res = await axios(req);
+        try {
+            var res = await axios(req);
+        } catch (err) {
+            if (err.response && err.response.data) {
+                var info = err.response.data;
+                var error = {
+                    message: info.message,
+                    code: info.status_code,
+                    detalhe: info.details,
+                }
 
-        if (res.status != 200) {
+                throw error;
+            }
+            
+            throw err;
+        }
+
+        if ((res.status != 200) && (res.status != 201) && (res.status != 202)) {
             throw res.data;
         }
 
@@ -97,15 +133,15 @@ class Request
     }
 
     async get(url_part) {
-        return await this.send(url_part, 'GET');
+        return await this.send(url_part, 'get');
     }
 
-    async post(url_part, data) {
-        return await this.send(url_part, 'POST', data);
+    async post(url_part, data = {}) {
+        return await this.send(url_part, 'post', data);
     }
 
-    async put(url_part, data) {
-        return await this.send(url_part, 'PUT', data);
+    async put(url_part, data = {}) {
+        return await this.send(url_part, 'put', data);
     }
 }
 
