@@ -53,8 +53,10 @@ class Getnet
         return this.authorizationToken;
     }
 
-    async authorize(transaction) {
+    async authorizeCredit(transaction) {
         await this.request.auth();
+
+        var response = await this.request.post('/v1/payments/credit', transaction);
 
         //..
     }

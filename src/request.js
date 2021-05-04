@@ -1,7 +1,6 @@
 const axios = require('axios');
 const Getnet = require('./getnet');
 const { endpoints} = require('./configs');
-const str = require('rhinojs/support/str');
 
 class Request
 {
@@ -53,8 +52,9 @@ class Request
             'Content-Type'  : 'application/json; charset=utf-8',
         };
 
-        var req = { url, method, headers, data };        
-
+        var req = { url, method, headers, data };  
+        
+        // Verificar se form method AUTH
         if (method == 'AUTH') {
             req.method = 'post';
             req.headers['Content-Type'] = 'application/x-www-form-urlencoded';
