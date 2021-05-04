@@ -1,0 +1,20 @@
+version: 0.2
+
+env:
+  variables:
+     NODE_ENV: "build"
+
+phases:
+  install:
+    runtime-versions:
+        nodejs: 10
+        
+  build:
+    commands:
+        # build JS
+        - cp ./bin/.npmrc ./.npmrc
+        - npm i --only=prod
+
+        # deploy JS 
+        - npm publish
+        - echo Finalizou OK
