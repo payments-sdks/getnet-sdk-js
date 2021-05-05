@@ -1,6 +1,6 @@
 {
     "name": "getnet-sdk-js",
-    "version": "0.1.0",
+    "version": "1.0.1",
     "description": "SDK JS Getnet",
     "keywords": [
         "payments",
@@ -12,9 +12,12 @@
         "Bruno Gonçalves"
     ],
     "license": "MIT",
-    "main": "./src/index.js",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:payments-sdks/getnet-sdk-js.git"
+    },
+    "main": "src/index.js",
     "dependencies": {
-        "axios": "^0.21.1",
-        "rhinojs": "^1.8.1"
+        "axios": "^0.21.1"
     }
 }
